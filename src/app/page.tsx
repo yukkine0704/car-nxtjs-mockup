@@ -1,36 +1,32 @@
-'use client';
+"use client";
 import EnergyConsumptionChart from "@/components/graph";
 import Navbar from "@/components/header";
 import LastReservations from "@/components/reservations";
 import Sidebar from "@/components/sidebar";
 import Statistics from "@/components/statscard";
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="flex min-h-screen bg-[#edf7fd]"> {/* Fondo de color #d8e9f4 */} 
+  const [isOpen, setIsOpen] = useState(false);
 
-      {/* Sidebar */}
-      <Sidebar />
+  return (
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#fafdff]">
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
       <div className="flex-grow flex flex-col">
-        {/* Navbar */}
-        <Navbar />
+        <Navbar setIsSidebarOpen={setIsOpen} />
 
         <div className="p-4 flex-grow overflow-auto">
-          {/* Estadísticas */}
           <div className="mb-4">
             <Statistics />
           </div>
 
-          {/* Contenedor para la gráfica y las reservas */}
-          <div className="flex space-x-4 mt-4">
-            {/* Gráfico de Consumo Energético */}
-            <div className="flex-1">
+          <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 mt-4">
+            <div className="w-full lg:w-1/2">
               <EnergyConsumptionChart />
             </div>
 
-            {/* Últimas Reservas */}
-            <div className="flex-1">
+            <div className="w-full lg:w-1/2">
               <LastReservations />
             </div>
           </div>

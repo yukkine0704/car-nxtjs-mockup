@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Chart, CategoryScale, LinearScale, LineElement, PointElement, Filler } from 'chart.js';
+import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Filler,
+} from "chart.js";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
+  variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
 });
 
