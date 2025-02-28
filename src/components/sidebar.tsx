@@ -58,6 +58,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       </div>
 
       <div className="absolute bottom-5 left-5 space-y-4">
+        <SidebarItem icon={<FaCog />} text="Configuración" />
+        <SidebarItem icon={<FaUser />} text="Perfil" />
+      </div>
+
+      <div className="absolute bottom-5 left-5 space-y-4 min-[1024px]:hidden">
         <SidebarItem icon={<FaSearch />} text="Buscar" />
         <SidebarItem icon={<FaBell />} text="Notificaciones" />
         <SidebarItem icon={<FaCog />} text="Configuración" />
