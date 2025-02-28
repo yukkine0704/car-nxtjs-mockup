@@ -3,7 +3,7 @@ import { FaChartBar, FaCalendarAlt, FaKey, FaThermometerHalf, FaClipboardList, F
 const Sidebar = () => {
   return (
     <div className="w-64 bg-white h-screen p-5 shadow-md">
-      <h2 className="text-xl font-bold text-blue-600">CAR Residencias</h2>
+      <h2 className="text-xl font-bold text-[#2498ff]">CAR Residencias</h2>
       <nav className="mt-6 space-y-4">
         <SidebarItem icon={<FaChartBar />} text="Dashboard" active />
         <SidebarItem icon={<FaCalendarAlt />} text="Reservas" />
@@ -21,7 +21,7 @@ const Sidebar = () => {
 };
 
 const SidebarItem = ({ icon, text, active, button }: any) => (
-  <div className={`flex items-center space-x-3 p-3 rounded-lg ${active ? "bg-blue-100 text-blue-600" : "text-gray-700"} ${button ? "bg-blue-500 text-white font-bold" : ""}`}>
+  <div className={`flex items-center space-x-3 p-3 rounded-lg ${active ? "text-[#2498ff]" : "text-[#274967]"} ${button ? "bg-[#2498ff] text-white font-bold" : ""}`}>
     {icon}
     <span>{text}</span>
   </div>

@@ -11,30 +11,30 @@ const LastReservations = () => {
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-md  h-full">
-      <h2 className="text-lg font-bold mb-4">Últimas Reservas</h2>
-      <table className="min-w-full">
+      <h2 className="text-lg font-bold mb-4 text-[#2498ff]">Últimas Reservas</h2>
+      <table className="min-w-full ">
         <thead>
           <tr className="border-b">
-            <th className="text-left py-2">SALA</th>
-            <th className="text-left py-2">USUARIO</th>
-            <th className="text-left py-2">HORA</th>
-            <th className="text-left py-2">ESTADO</th>
+            <th className="text-left py-2 text-{#274967}">SALA</th>
+            <th className="text-left py-2 text-{#274967}">USUARIO</th>
+            <th className="text-left py-2 text-{#274967}">HORA</th>
+            <th className="text-left py-2 text-{#274967}">ESTADO</th>
           </tr>
         </thead>
         <tbody>
           {reservations.map((reservation, index) => (
             <tr key={index} className="border-b hover:bg-gray-100">
-              <td className="py-2">{reservation.sala}</td>
-              <td className="py-2">{reservation.usuario}</td>
-              <td className="py-2">{reservation.hora}</td>
-              <td className="py-2">
+              <td className="py-2 underline text-[#2498ff]">{reservation.sala}</td>
+              <td className="py-2 underline text-[#2498ff]">{reservation.usuario}</td>
+              <td className="py-2 text-[#274967] ">{reservation.hora}</td>
+              <td className="py-2 ">
                 <span
-                  className={`px-2 py-1 text-sm font-semibold rounded-full ${
+                  className={`px-2 py-1 text-sm font-semibold rounded-full border border-blue-200 ${
                     reservation.estado === 'CONFIRMADA'
-                      ? 'bg-green-100 text-green-600'
+                      ? ' text-[#4ddb4d]'
                       : reservation.estado === 'CANCELADA'
-                      ? 'bg-red-100 text-red-600'
-                      : 'bg-yellow-100 text-yellow-600'
+                      ? ' text-[#ed433a]'
+                      : ' text-[#fdd76b]'
                   }`}
                 >
                   {reservation.estado}
