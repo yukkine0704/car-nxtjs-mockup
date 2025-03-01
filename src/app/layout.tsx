@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import localFont from 'next/font/local'
 import {
   Chart,
   CategoryScale,
@@ -10,15 +10,11 @@ import {
   Filler,
 } from "chart.js";
 
-const geistSans = Geist({
-  variable: "--font-plus-jakarta-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const plusJakartaSans = localFont({ src: './PlusJakartaSans-VariableFont_wght.ttf', 
+  variable: "--font-plus-jakarta-san",
+})
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -35,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${plusJakartaSans.variable} antialiased`}
       >
         {children}
       </body>
