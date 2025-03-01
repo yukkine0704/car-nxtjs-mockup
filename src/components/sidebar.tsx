@@ -10,10 +10,9 @@ import {
   FaArrowLeft,
   FaSearch,
   FaBell,
-  FaUserCircle,
 } from "react-icons/fa";
 
-const Sidebar = ({ isOpen, setIsOpen }) => {
+const Sidebar = ({ isOpen, setIsOpen, className  }) => {
   return (
     <div
       className={`
@@ -28,6 +27,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       ease-in-out
       ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
       z-10
+      ${className}
     `}
     >
       <div className="flex justify-between items-center mb-4">

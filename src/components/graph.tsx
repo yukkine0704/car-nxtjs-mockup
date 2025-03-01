@@ -56,6 +56,7 @@ const EnergyConsumptionChart = () => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: true,
     scales: {
       x: {
         title: {
@@ -84,13 +85,13 @@ const EnergyConsumptionChart = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
-      <div className="flex justify-between items-center">
+    <div className="bg-white p-4 rounded-lg shadow-md h-full">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold mb-4 text-[#274967]">
           Consumo Energético
         </h2>
       </div>
-      <Line data={data} options={options} />
+      <Line data={data} options={options} className="h-full" />
     </div>
   );
 };

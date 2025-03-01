@@ -1,16 +1,24 @@
-import { FaSearch, FaBell, FaUserCircle, FaHome, FaBars } from "react-icons/fa";
+import {
+  FaSearch,
+  FaBell,
+  FaUserCircle,
+  FaHome,
+  FaBars,
+  FaCaretDown,
+} from "react-icons/fa";
 
 const Navbar = ({ setIsSidebarOpen }) => {
   return (
     <div className="p-4 md:p-6">
       <div className="flex justify-between items-center">
         <div className="flex flex-col w-full md:w-auto">
-          <button
-            className="flex items-center border border-[#2498ff] rounded-md w-full h-15 px-2 py-1 hover:bg-blue-50"
-            onClick={() => setIsSidebarOpen((prev: any) => !prev)}
-          >
+          <button className="flex items-center border border-[#2498ff] rounded-md w-full h-15 px-2 py-1 hover:bg-blue-50">
             <div className="md:hidden">
-              <FaBars color="#2498ff" className="mr-2" />
+              <FaBars
+                color="#2498ff"
+                className="mr-2"
+                onClick={() => setIsSidebarOpen((prev: any) => !prev)}
+              />
             </div>
             <div className="hidden md:inline">
               <FaHome color="#2498ff" className="mr-2" />
@@ -24,6 +32,9 @@ const Navbar = ({ setIsSidebarOpen }) => {
                 <option value="2">Test</option>
                 <option value="3">Test</option>
               </select>
+            </div>
+            <div className="md:hidden">
+              <FaCaretDown color="#2498ff" className="ml-2" />
             </div>
           </button>
 

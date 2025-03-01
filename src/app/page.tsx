@@ -11,7 +11,11 @@ export default function Home() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#fafdff]">
-      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+      <Sidebar
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        className="md:sticky md:top-0 md:h-screen"
+      />
 
       <div className="flex-grow flex flex-col">
         <Navbar setIsSidebarOpen={setIsOpen} />

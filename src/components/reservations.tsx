@@ -39,7 +39,7 @@ const LastReservations = () => {
       <h2 className="text-lg font-bold mb-4 text-[#2498ff]">
         Últimas Reservas
       </h2>
-      <table className="min-w-full min-h-90 ">
+      <table className="min-w-full table-auto  ">
         <thead>
           <tr className="border-b">
             <th className="text-left py-2 text-[#91a4b2]">SALA</th>
