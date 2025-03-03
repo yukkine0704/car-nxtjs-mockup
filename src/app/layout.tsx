@@ -10,11 +10,12 @@ import {
   Filler,
 } from "chart.js";
 
+import { Providers } from './provider'
 
-const plusJakartaSans = localFont({ src: './PlusJakartaSans-VariableFont_wght.ttf', 
+const plusJakartaSans = localFont({
+  src: './PlusJakartaSans-VariableFont_wght.ttf',
   variable: "--font-plus-jakarta-san",
 })
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -33,7 +34,9 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.variable} antialiased`}
       >
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
