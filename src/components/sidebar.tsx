@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 
 import Link from 'next/link';
+import {SolarBuildings3LineDuotone} from '../components/common/icons/BuildingIcon';
 
 const Sidebar = ({ isOpen, setIsOpen, className }: any) => {
   return (
@@ -47,6 +48,7 @@ const Sidebar = ({ isOpen, setIsOpen, className }: any) => {
         <SidebarItem route='/accesos' icon={<FaKey />} text="Accesos" />
         <SidebarItem route='/climatizacion' icon={<FaThermometerHalf />} text="Climatización" />
         <SidebarItem route='/estadisticas' icon={<FaClipboardList />} text="Estadísticas" />
+        <SidebarItem route='/edificaciones' icon={<SolarBuildings3LineDuotone/>} text="Edificaciones" />
         <SidebarItem route='/nueva-reserva' icon={<FaPlus />} text="Nueva Reserva" button />
       </nav>
 

@@ -115,13 +115,6 @@ const ReservaTable = () => {
     };
 
     // Acciones del menú
-    const handleView = () => {
-        if (selectedReservation) {
-            router.push(`/reservas/${selectedReservation.id}`);
-        }
-        handleMenuClose();
-    };
-
     const handleEdit = () => {
         if (selectedReservation) {
             router.push(`/reservas/editar/${selectedReservation.id}`);
@@ -185,6 +178,7 @@ const ReservaTable = () => {
                             <TableCell style={{ color: "#91a4b2" }}>Edificio</TableCell>
                             <TableCell style={{ color: "#91a4b2" }}>Sala</TableCell>
                             <TableCell style={{ color: "#91a4b2" }}>Estado</TableCell>
+                            <TableCell style={{ color: "#91a4b2" }}></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
