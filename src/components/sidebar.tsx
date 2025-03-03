@@ -10,6 +10,7 @@ import {
   FaArrowLeft,
   FaSearch,
   FaBell,
+  FaFootballBall,
 } from "react-icons/fa";
 
 import Link from 'next/link';
@@ -44,9 +45,10 @@ const Sidebar = ({ isOpen, setIsOpen, className }: any) => {
       <nav className="mt-6 space-y-4">
         <SidebarItem route='/' icon={<FaChartBar />} text="Dashboard" active />
         <SidebarItem route='/reservas' icon={<FaCalendarAlt />} text="Reservas" />
-        <SidebarItem route='/accesos' icon={<FaKey />} text="Accesos" />
+        <SidebarItem route='/acceso' icon={<FaKey />} text="Accesos" />
         <SidebarItem route='/climatizacion' icon={<FaThermometerHalf />} text="Climatización" />
         <SidebarItem route='/estadisticas' icon={<FaClipboardList />} text="Estadísticas" />
+        <SidebarItem route='/deportes' icon={<FaFootballBall />} text="Estadísticas" />
         <SidebarItem route='/nueva-reserva' icon={<FaPlus />} text="Nueva Reserva" button />
       </nav>
 
