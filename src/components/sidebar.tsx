@@ -12,7 +12,9 @@ import {
   FaBell,
 } from "react-icons/fa";
 
-const Sidebar = ({ isOpen, setIsOpen, className  }) => {
+import Link from 'next/link';
+
+const Sidebar = ({ isOpen, setIsOpen, className }: any) => {
   return (
     <div
       className={`
@@ -40,12 +42,12 @@ const Sidebar = ({ isOpen, setIsOpen, className  }) => {
         <h2 className="text-xl font-bold text-[#2498ff]">CAR Residencias</h2>
       </div>
       <nav className="mt-6 space-y-4">
-        <SidebarItem icon={<FaChartBar />} text="Dashboard" active />
-        <SidebarItem icon={<FaCalendarAlt />} text="Reservas" />
-        <SidebarItem icon={<FaKey />} text="Accesos" />
-        <SidebarItem icon={<FaThermometerHalf />} text="Climatización" />
-        <SidebarItem icon={<FaClipboardList />} text="Estadísticas" />
-        <SidebarItem icon={<FaPlus />} text="Nueva Reserva" button />
+        <SidebarItem route='/' icon={<FaChartBar />} text="Dashboard" active />
+        <SidebarItem route='/reservas' icon={<FaCalendarAlt />} text="Reservas" />
+        <SidebarItem route='/accesos' icon={<FaKey />} text="Accesos" />
+        <SidebarItem route='/climatizacion' icon={<FaThermometerHalf />} text="Climatización" />
+        <SidebarItem route='/estadisticas' icon={<FaClipboardList />} text="Estadísticas" />
+        <SidebarItem route='/nueva-reserva' icon={<FaPlus />} text="Nueva Reserva" button />
       </nav>
 
       <hr className="min-[1024px]:hidden my-4 border-gray-300" />
@@ -58,31 +60,47 @@ const Sidebar = ({ isOpen, setIsOpen, className  }) => {
       </div>
 
       <div className="absolute bottom-5 left-5 space-y-4">
-        <SidebarItem icon={<FaCog />} text="Configuración" />
-        <SidebarItem icon={<FaUser />} text="Perfil" />
+        <SidebarItem route='/configuracion' icon={<FaCog />} text="Configuración" />
+        <SidebarItem route='/perfil' icon={<FaUser />} text="Perfil" />
       </div>
 
       <div className="absolute bottom-5 left-5 space-y-4 min-[1024px]:hidden">
-        <SidebarItem icon={<FaSearch />} text="Buscar" />
-        <SidebarItem icon={<FaBell />} text="Notificaciones" />
-        <SidebarItem icon={<FaCog />} text="Configuración" />
-        <SidebarItem icon={<FaUser />} text="Perfil" />
+        <SidebarItem route='/buscar' icon={<FaSearch />} text="Buscar" />
+        <SidebarItem route='/notificaciones' icon={<FaBell />} text="Notificaciones" />
+        <SidebarItem route='/configuracion' icon={<FaCog />} text="Configuración" />
+        <SidebarItem route='/perfil' icon={<FaUser />} text="Perfil" />
       </div>
     </div>
   );
 };
 
-const SidebarItem = ({ icon, text, active, button }: any) => (
-  <div
-    className={`
-    flex items-center space-x-3 p-3 rounded-lg 
+// Mejora del componente SidebarItem para que maneje correctamente las rutas
+const SidebarItem = ({ icon, text, active, button, route = "#" }: any) => {
+  const content = (
+    <>
+      {icon}
+      <span className="md:inline">{text}</span>
+    </>
+  );
+
+  const baseClasses = `
+    flex items-center space-x-3 p-3 rounded-lg w-full
     ${active ? "text-[#2498ff]" : "text-[#274967]"} 
     ${button ? "bg-[#2498ff] text-white font-bold" : ""}
-  `}
-  >
-    {icon}
-    <span className="md:inline">{text}</span>
-  </div>
-);
+    transition-colors duration-200 hover:bg-gray-100
+  `;
+
+  return (
+    <div className={baseClasses}>
+      {route && route !== "#" ? (
+        <Link href={route} className="flex items-center space-x-3 w-full">
+          {content}
+        </Link>
+      ) : (
+        content
+      )}
+    </div>
+  );
+};
 
 export default Sidebar;
