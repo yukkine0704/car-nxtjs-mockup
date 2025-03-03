@@ -48,7 +48,7 @@ const Sidebar = ({ isOpen, setIsOpen, className }: any) => {
         <SidebarItem route='/acceso' icon={<FaKey />} text="Accesos" />
         <SidebarItem route='/climatizacion' icon={<FaThermometerHalf />} text="Climatización" />
         <SidebarItem route='/estadisticas' icon={<FaClipboardList />} text="Estadísticas" />
-        <SidebarItem route='/deportes' icon={<FaFootballBall />} text="Estadísticas" />
+        <SidebarItem route='/deportes' icon={<FaFootballBall />} text="Deportes" />
         <SidebarItem route='/nueva-reserva' icon={<FaPlus />} text="Nueva Reserva" button />
       </nav>
 
