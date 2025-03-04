@@ -59,7 +59,26 @@ import {
 } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 
-const DynamicTable = ({ route, title, columns, data, showCheckboxes }) => {
+interface TableItem {
+  id: string | number;
+  [key: string]: any;
+}
+
+interface DynamicTableProps {
+  route: string;
+  title: string;
+  columns: string[];
+  data: TableItem[];
+  showCheckboxes?: boolean;
+}
+
+const DynamicTable: React.FC<DynamicTableProps> = ({
+  route,
+  title,
+  columns,
+  data,
+  showCheckboxes = false,
+}) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [anchorEl, setAnchorEl] = useState(null);

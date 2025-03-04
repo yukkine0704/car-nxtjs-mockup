@@ -1,10 +1,10 @@
 'use client';
+import { useParams } from 'next/navigation';
+import { useState } from "react";
 
 import Sidebar from '@/components/sidebar';
 import Navbar from '@/components/header';
 import ReservaForm from '../../components/ReservaForm';
-import { useState, useEffect } from "react";
-import { useParams } from 'next/navigation';
 
 export default function EditarReservaPage() {
     const [isOpen, setIsOpen] = useState(false);
