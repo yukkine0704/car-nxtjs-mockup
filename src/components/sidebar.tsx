@@ -11,11 +11,12 @@ import {
   FaSearch,
   FaBell,
   FaFootballBall,
-  FaTabletAlt, 
+  FaTabletAlt,
 } from "react-icons/fa";
 
 import Link from 'next/link';
-import {SolarBuildings3LineDuotone} from '../components/common/icons/BuildingIcon';
+import { SolarBuildings3LineDuotone } from '../components/common/icons/BuildingIcon';
+import { MapCityHall } from "./common/icons/HallIcon";
 
 const Sidebar = ({ isOpen, setIsOpen, className }: any) => {
   return (
@@ -23,7 +24,8 @@ const Sidebar = ({ isOpen, setIsOpen, className }: any) => {
       className={`
       fixed md:static 
       w-64 md:w-auto 
-      h-screen 
+      h-full
+      overflow-y-auto 
       bg-white 
       p-5 
       shadow-md 
@@ -44,7 +46,7 @@ const Sidebar = ({ isOpen, setIsOpen, className }: any) => {
         </button>
         <h2 className="text-xl font-bold text-[#2498ff]">CAR Residencias</h2>
       </div>
-      <nav className="mt-6 space-y-4">
+      <nav className="mb-10 mt-6 space-y-4 overflow-y-auto">
         <SidebarItem route='/' icon={<FaChartBar />} text="Dashboard" active />
         <SidebarItem route='/reservas' icon={<FaCalendarAlt />} text="Reservas" />
         <SidebarItem route='/acceso' icon={<FaKey />} text="Accesos" />
@@ -52,7 +54,8 @@ const Sidebar = ({ isOpen, setIsOpen, className }: any) => {
         <SidebarItem route='/estadisticas' icon={<FaClipboardList />} text="Estadísticas" />
         <SidebarItem route='/deportes' icon={<FaFootballBall />} text="Deportes" />
         <SidebarItem route='/dispositivos' icon={<FaTabletAlt />} text="Dispositivos" />
-        <SidebarItem route='/edificaciones' icon={<SolarBuildings3LineDuotone/>} text="Edificaciones" />
+        <SidebarItem route='/edificaciones' icon={<SolarBuildings3LineDuotone />} text="Edificaciones" />
+        <SidebarItem route='/salas' icon={<MapCityHall />} text="Salas" />
         <SidebarItem route='/nueva-reserva' icon={<FaPlus />} text="Nueva Reserva" button />
       </nav>
 
@@ -65,12 +68,12 @@ const Sidebar = ({ isOpen, setIsOpen, className }: any) => {
         <div className="flex justify-around"></div>
       </div>
 
-      <div className="absolute bottom-5 left-5 space-y-4">
+      <div className="space-y-4">
         <SidebarItem route='/configuracion' icon={<FaCog />} text="Configuración" />
         <SidebarItem route='/perfil' icon={<FaUser />} text="Perfil" />
       </div>
 
-      <div className="absolute bottom-5 left-5 space-y-4 min-[1024px]:hidden">
+      <div className="space-y-4 min-[1024px]:hidden">
         <SidebarItem route='/buscar' icon={<FaSearch />} text="Buscar" />
         <SidebarItem route='/notificaciones' icon={<FaBell />} text="Notificaciones" />
         <SidebarItem route='/configuracion' icon={<FaCog />} text="Configuración" />
