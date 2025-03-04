@@ -138,6 +138,20 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     page * rowsPerPage + rowsPerPage
   );
 
+  const isImageUrl = (value: any): boolean => {
+    if (typeof value !== 'string') return false;
+
+    // Verifica si la cadena parece una URL
+    if (value.startsWith('http') || value.startsWith('https')) {
+      // Comprueba extensiones de imagen comunes o palabras clave en la URL
+      const isImageExtension = /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(value);
+      const containsImageKeywords = /(image|photo|img|picture)/i.test(value);
+
+      return isImageExtension || containsImageKeywords;
+    }
+
+    return false;
+  };
   return (
     <Paper className="p-4 rounded-lg shadow-md w-full relative">
       <Box className="flex justify-between items-center mb-4">
@@ -200,7 +214,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {column}
                 </TableCell>
               ))}
-              <TableCell />
+              <TableCell align="right" style={{ width: '60px', padding: '0 8px' }} />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -216,10 +230,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 )}
                 {columns.map((column) => (
                   <TableCell key={column}>
-                    {item[column.toLowerCase()]}
+                    {isImageUrl(item[column.toLowerCase()]) ? (
+                      <img
+                        src={item[column.toLowerCase()]}
+                        alt={`${column} image`}
+                        style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }}
+                      />
+                    ) : (
+                      item[column.toLowerCase()]
+                    )}
                   </TableCell>
                 ))}
-                <TableCell>
+                <TableCell align="right" style={{ width: '60px', padding: '0 8px' }}>
                   <IconButton
                     aria-label="acciones"
                     onClick={(e) => handleMenuOpen(e, item)}

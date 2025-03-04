@@ -1,88 +1,52 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
-import {
-    Box,
-    Button,
-    TextField,
-    Typography,
-    Paper,
+import React, { useState, useCallback } from 'react';
+import { 
+    Box, 
+    Button, 
+    TextField, 
+    Typography, 
+    Paper, 
     FormHelperText,
-    CircularProgress
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    FormLabel
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { useDropzone } from 'react-dropzone';
 import { useRouter } from 'next/navigation';
 import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 
-export default function BuildingsForm(isEditing: boolean, buildingId: number) {
+export default function BuildingsForm() {
     const router = useRouter();
     const [formData, setFormData] = useState({
         name: '',
         floors: '',
         description: '',
     });
-
+    
     const [mainImage, setMainImage] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
     const [touched, setTouched] = useState({});
     const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(isEditing);
-
-
-    // Añadir este efecto para cargar datos en modo edición
-    useEffect(() => {
-        if (isEditing && buildingId) {
-            setLoading(true);
-
-            // Simulación de carga de datos de un edificio existente
-            setTimeout(() => {
-                // Buscar el edificio en los datos de ejemplo
-                const building = buildings.find(b => b.id === parseInt(buildingId));
-
-                if (building) {
-                    setFormData({
-                        name: building.name,
-                        floors: building.floors.toString(),
-                        description: "Descripción del edificio " + building.name
-                    });
-
-                    // Crear un objeto de imagen para la vista previa
-                    fetch(building.image)
-                        .then(res => res.blob())
-                        .then(blob => {
-                            const file = new File([blob], "main-image.jpg", { type: "image/jpeg" });
-                            setMainImage(Object.assign(file, { preview: building.image }));
-                            // También simulamos una galería
-                            setGalleryImages([Object.assign(file, { preview: building.image })]);
-                        });
-                } else {
-                    alert('Edificio no encontrado');
-                    router.push('/edificaciones');
-                }
-
-                setLoading(false);
-            }, 500);
-        }
-    }, [isEditing, buildingId, router]);
-
 
     // Validación
     const validate = (fieldValues = formData) => {
         const temp = { ...errors };
-
+        
         if ('name' in fieldValues)
             temp.name = fieldValues.name ? "" : "El nombre es requerido";
-
+        
         if ('floors' in fieldValues) {
             temp.floors = fieldValues.floors ? "" : "El número de pisos es requerido";
             if (fieldValues.floors && (isNaN(fieldValues.floors) || parseInt(fieldValues.floors) <= 0))
                 temp.floors = "Ingresa un número válido de pisos";
         }
-
+        
         if ('description' in fieldValues)
             temp.description = fieldValues.description ? "" : "La descripción es requerida";
-
+        
         setErrors({
             ...temp
         });
@@ -98,12 +62,12 @@ export default function BuildingsForm(isEditing: boolean, buildingId: number) {
             ...formData,
             [name]: value
         });
-
+        
         setTouched({
             ...touched,
             [name]: true
         });
-
+        
         validate({ [name]: value });
     };
 
@@ -119,7 +83,7 @@ export default function BuildingsForm(isEditing: boolean, buildingId: number) {
 
     // Configuración para el dropzone de la galería
     const onGalleryDrop = useCallback(acceptedFiles => {
-        const newImages = acceptedFiles.map(file =>
+        const newImages = acceptedFiles.map(file => 
             Object.assign(file, {
                 preview: URL.createObjectURL(file)
             })
@@ -146,19 +110,21 @@ export default function BuildingsForm(isEditing: boolean, buildingId: number) {
     // Manejar envío del formulario
     const handleSubmit = (e) => {
         e.preventDefault();
-
+        
         // Marcar todos los campos como tocados para mostrar errores
         const touchedFields = {};
         Object.keys(formData).forEach(key => touchedFields[key] = true);
         setTouched(touchedFields);
 
         if (validate() && mainImage && galleryImages.length > 0) {
-            if (isEditing) {
-                console.log('Actualizando edificación:', buildingId, formData);
-            } else {
-                console.log('Creando edificación:', formData);
-            }
+            // Aquí iría la lógica para guardar los datos
+            console.log('Formulario enviado:', { ...formData, mainImage, galleryImages });
+            
+            // Redireccionar a la lista de edificaciones
             router.push('/edificaciones');
+        } else {
+            if (!mainImage) setErrors(prev => ({ ...prev, mainImage: "La imagen principal es requerida" }));
+            if (galleryImages.length === 0) setErrors(prev => ({ ...prev, gallery: "Debes subir al menos una imagen para la galería" }));
         }
     };
 
@@ -166,19 +132,10 @@ export default function BuildingsForm(isEditing: boolean, buildingId: number) {
         router.push('/edificaciones');
     };
 
-    // Añadir este condicional antes del return
-    // if (loading) {
-    //     return (
-    //         <Paper className="p-6 rounded-lg shadow-md w-full flex justify-center items-center" style={{ minHeight: '300px' }}>
-    //             <CircularProgress />
-    //         </Paper>
-    //     );
-    // }
-
     return (
         <Paper className="p-6 rounded-lg shadow-md w-full">
-            <Typography variant="h5" className="mb-6 font-bold" style={{ color: "#2498ff" }}>
-                {isEditing ? 'Editar Edificación' : 'Nueva Edificación'}
+            <Typography variant="h5" className="mb-16 font-bold" style={{ color: "#2498ff" }}>
+                Nueva Edificación
             </Typography>
 
             <form onSubmit={handleSubmit}>
@@ -215,73 +172,111 @@ export default function BuildingsForm(isEditing: boolean, buildingId: number) {
                         />
                     </Grid>
 
-                    {/* Imagen principal */}
-                    <Grid size={{ xs: 4, sm: 8, md: 6 }}>
-                        <Typography variant="subtitle1" gutterBottom>
-                            Imagen Principal*
-                        </Typography>
-                        <Box
-                            {...mainImageDropzone.getRootProps()}
-                            className="p-4 border-2 border-dashed rounded-md cursor-pointer text-center hover:bg-gray-50"
-                            style={{
-                                borderColor: errors.mainImage ? '#d32f2f' : '#ccc',
-                                minHeight: '150px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}
+                    {/* Imagen principal con label flotante */}
+                    <Grid size={{ xs: 4, sm: 8, md: 12 }}>
+                        <FormControl 
+                            fullWidth 
+                            variant="outlined" 
+                            error={Boolean(errors.mainImage)}
+                            required
                         >
-                            <input {...mainImageDropzone.getInputProps()} />
-                            {mainImage ? (
-                                <Box className="flex flex-col items-center">
-                                    <img
-                                        src={mainImage.preview}
-                                        alt="Vista previa"
-                                        style={{ maxHeight: '150px', maxWidth: '100%', objectFit: 'contain' }}
-                                    />
-                                    <Typography variant="body2" className="mt-2">
-                                        {mainImage.name}
-                                    </Typography>
-                                </Box>
-                            ) : (
-                                <Box className="flex flex-col items-center">
-                                    <CloudUploadIcon style={{ fontSize: 48, color: '#2498ff' }} />
-                                    <Typography variant="body1" className="mt-2">
-                                        Arrastra una imagen aquí o haz clic para seleccionarla
-                                    </Typography>
-                                </Box>
+                            <InputLabel 
+                                htmlFor="mainImage-upload"
+                                shrink={Boolean(mainImage)}
+                                style={{ 
+                                    background: 'white', 
+                                    padding: '0 8px' 
+                                }}
+                            >
+                                Imagen Principal
+                            </InputLabel>
+                            <Box
+                                {...mainImageDropzone.getRootProps()}
+                                className="border-2 border-dashed rounded-md cursor-pointer hover:bg-gray-50"
+                                style={{ 
+                                    borderColor: errors.mainImage ? '#d32f2f' : '#c4c4c4',
+                                    minHeight: '150px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    padding: '20px',
+                                    marginTop: '8px'
+                                }}
+                                id="mainImage-upload"
+                            >
+                                <input {...mainImageDropzone.getInputProps()} />
+                                {mainImage ? (
+                                    <Box className="flex flex-col items-center">
+                                        <img
+                                            src={mainImage.preview}
+                                            alt="Vista previa"
+                                            style={{ maxHeight: '150px', maxWidth: '100%', objectFit: 'contain' }}
+                                        />
+                                        <Typography variant="body2" className="mt-2">
+                                            {mainImage.name}
+                                        </Typography>
+                                    </Box>
+                                ) : (
+                                    <Box className="flex flex-col items-center">
+                                        <CloudUploadIcon style={{ fontSize: 48, color: '#2498ff' }} />
+                                        <Typography variant="body1" className="mt-2">
+                                            Arrastra una imagen aquí o haz clic para seleccionarla
+                                        </Typography>
+                                    </Box>
+                                )}
+                            </Box>
+                            {errors.mainImage && (
+                                <FormHelperText error>{errors.mainImage}</FormHelperText>
                             )}
-                        </Box>
-                        {errors.mainImage && (
-                            <FormHelperText error>{errors.mainImage}</FormHelperText>
-                        )}
+                        </FormControl>
                     </Grid>
 
-                    {/* Galería de imágenes */}
-                    <Grid size={{ xs: 4, sm: 8, md: 6 }}>
-                        <Typography variant="subtitle1" gutterBottom>
-                            Galería de Imágenes*
-                        </Typography>
-                        <Box
-                            {...galleryDropzone.getRootProps()}
-                            className="p-4 border-2 border-dashed rounded-md cursor-pointer text-center hover:bg-gray-50"
-                            style={{
-                                borderColor: errors.gallery ? '#d32f2f' : '#ccc',
-                                minHeight: '150px'
-                            }}
+                    {/* Galería de imágenes con label flotante */}
+                    <Grid size={{ xs: 4, sm: 8, md: 12 }}>
+                        <FormControl 
+                            fullWidth 
+                            variant="outlined" 
+                            error={Boolean(errors.gallery)}
+                            required
                         >
-                            <input {...galleryDropzone.getInputProps()} />
-                            <Box className="flex flex-col items-center justify-center">
-                                <CloudUploadIcon style={{ fontSize: 48, color: '#2498ff' }} />
-                                <Typography variant="body1" className="mt-2">
-                                    Arrastra imágenes aquí o haz clic para seleccionarlas
-                                </Typography>
+                            <InputLabel 
+                                htmlFor="gallery-upload"
+                                shrink={galleryImages.length > 0}
+                                style={{ 
+                                    background: 'white', 
+                                    padding: '0 8px' 
+                                }}
+                            >
+                                Galería de Imágenes
+                            </InputLabel>
+                            <Box
+                                {...galleryDropzone.getRootProps()}
+                                className="border-2 border-dashed rounded-md cursor-pointer hover:bg-gray-50"
+                                style={{ 
+                                    borderColor: errors.gallery ? '#d32f2f' : '#c4c4c4',
+                                    minHeight: '150px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    padding: '20px',
+                                    marginTop: '8px'
+                                }}
+                                id="gallery-upload"
+                            >
+                                <input {...galleryDropzone.getInputProps()} />
+                                <Box className="flex flex-col items-center justify-center">
+                                    <CloudUploadIcon style={{ fontSize: 48, color: '#2498ff' }} />
+                                    <Typography variant="body1" className="mt-2">
+                                        Arrastra imágenes aquí o haz clic para seleccionarlas
+                                    </Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                        {errors.gallery && (
-                            <FormHelperText error>{errors.gallery}</FormHelperText>
-                        )}
+                            {errors.gallery && (
+                                <FormHelperText error>{errors.gallery}</FormHelperText>
+                            )}
+                        </FormControl>
 
                         {/* Previsualizaciones de la galería */}
                         {galleryImages.length > 0 && (
@@ -298,9 +293,9 @@ export default function BuildingsForm(isEditing: boolean, buildingId: number) {
                                             size="small"
                                             color="error"
                                             variant="contained"
-                                            style={{
-                                                position: 'absolute',
-                                                top: '5px',
+                                            style={{ 
+                                                position: 'absolute', 
+                                                top: '5px', 
                                                 right: '5px',
                                                 minWidth: '24px',
                                                 width: '24px',
