@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Sidebar from '@/components/sidebar';
-import Navbar from '@/components/header';
-import DispositivoForm from '../../componentes/DispositivosForm';
+import Sidebar from "@/components/sidebar";
+import Navbar from "@/components/header";
+import DispositivoForm from "../../componentes/DispositivosForm";
 import { useState } from "react";
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 
 export default function EditarDispositivo() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +21,8 @@ export default function EditarDispositivo() {
       <div className="flex-grow flex flex-col">
         <Navbar setIsSidebarOpen={setIsOpen} />
         <div className="p-4 flex-grow overflow-auto">
-          <DispositivoForm isEditing={true} dispositivoId={dispositivoId} /> {/* Pasa el dispositivoId aquí */}
+          <DispositivoForm isEditing={true} dispositivoId={dispositivoId} />{" "}
+          {/* Pasa el dispositivoId aquí */}
         </div>
       </div>
     </div>

@@ -1,5 +1,36 @@
 // components/DynamicTable.js
 
+/**
+ * DynamicTable es un componente reutilizable que renderiza una tabla dinámica utilizando Material-UI.
+ *
+ * Props:
+ * - route: Una cadena que representa la ruta base para la navegación (utilizada para editar y crear elementos).
+ * - title: Una cadena que establece el título de la tabla.
+ * - columns: Un arreglo de cadenas que define los encabezados de las columnas de la tabla.
+ * - data: Un arreglo de objetos que contiene los datos a mostrar en la tabla. Cada objeto debe tener claves que correspondan a los nombres de las columnas.
+ * - showCheckboxes: Un booleano que determina si se deben mostrar casillas de verificación para la selección de filas.
+ *
+ * Características:
+ * - **Paginación**: La tabla admite paginación, lo que permite al usuario navegar a través de páginas de datos.
+ * - **Selección de Filas**: Los usuarios pueden seleccionar filas individuales o todas las filas usando casillas de verificación, lo que permite acciones en lote.
+ * - **Menú Contextual**: Cada fila tiene un menú contextual (abierto con un ícono de elipsis vertical) que ofrece opciones para editar y eliminar el elemento seleccionado.
+ * - **Diseño Responsivo**: La tabla incluye un botón de acción flotante para dispositivos móviles que permite un acceso rápido a las funciones de agregar o eliminar.
+ *
+ * Uso:
+ * 1. Importa el componente y pasa las props requeridas.
+ * 2. Asegúrate de que la prop `data` contenga objetos con claves que coincidan con los encabezados de las columnas.
+ * 3. Maneja acciones como editar y eliminar en el componente padre para gestionar el estado y las actualizaciones de datos.
+ *
+ * Ejemplo:
+ * <DynamicTable
+ *   route="items"
+ *   title="Lista de Elementos"
+ *   columns={["Nombre", "Descripción", "Precio"]}
+ *   data={listaDeElementos}
+ *   showCheckboxes={true}
+ * />
+ */
+
 import React, { useState } from "react";
 import {
   Paper,
@@ -26,7 +57,7 @@ import {
   Delete as DeleteIcon,
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 const DynamicTable = ({ route, title, columns, data, showCheckboxes }) => {
   const [page, setPage] = useState(0);
@@ -57,8 +88,8 @@ const DynamicTable = ({ route, title, columns, data, showCheckboxes }) => {
 
   const handleEdit = () => {
     if (selectedItem) {
-        console.log(selectedItem.id)
-      router.push(`../${route}/editar/${selectedItem.id}`); 
+      console.log(selectedItem.id);
+      router.push(`../${route}/editar/${selectedItem.id}`);
     }
   };
 
@@ -91,26 +122,30 @@ const DynamicTable = ({ route, title, columns, data, showCheckboxes }) => {
   return (
     <Paper className="p-4 rounded-lg shadow-md w-full relative">
       <Box className="flex justify-between items-center mb-4">
-        <Typography variant="h6" className="font-bold" style={{ color: "#2498ff" }}>
+        <Typography
+          variant="h6"
+          className="font-bold"
+          style={{ color: "#2498ff" }}
+        >
           {title}
         </Typography>
         {selectedRows.length > 1 ? (
-            <div className="hidden md:block">
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={handleDeleteSelected}
-          >
-            Eliminar
-          </Button>
+          <div className="hidden md:block">
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={handleDeleteSelected}
+            >
+              Eliminar
+            </Button>
           </div>
         ) : (
           <div className="hidden md:block">
             <Button
               variant="contained"
               startIcon={<AddIcon />}
-              onClick={() => router.push(`../${route}/crear`)} 
+              onClick={() => router.push(`../${route}/crear`)}
             >
               Añadir
             </Button>
@@ -124,8 +159,13 @@ const DynamicTable = ({ route, title, columns, data, showCheckboxes }) => {
               {showCheckboxes && (
                 <TableCell padding="checkbox">
                   <Checkbox
-                    indeterminate={selectedRows.length > 0 && selectedRows.length < data.length}
-                    checked={data.length > 0 && selectedRows.length === data.length}
+                    indeterminate={
+                      selectedRows.length > 0 &&
+                      selectedRows.length < data.length
+                    }
+                    checked={
+                      data.length > 0 && selectedRows.length === data.length
+                    }
                     onChange={(event) => {
                       if (event.target.checked) {
                         setSelectedRows(data.map((item) => item.id));
@@ -172,7 +212,9 @@ const DynamicTable = ({ route, title, columns, data, showCheckboxes }) => {
             ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={columns.length + (showCheckboxes ? 1 : 0) + 1} />
+                <TableCell
+                  colSpan={columns.length + (showCheckboxes ? 1 : 0) + 1}
+                />
               </TableRow>
             )}
           </TableBody>

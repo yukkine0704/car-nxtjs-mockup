@@ -1,13 +1,12 @@
-
-'use client';
+"use client";
 import { useState } from "react";
-import DynamicTable from '@/components/Table';
-import Sidebar from '@/components/sidebar';
-import Navbar from '@/components/header';
+import DynamicTable from "@/components/Table";
+import Sidebar from "@/components/sidebar";
+import Navbar from "@/components/header";
 
 const HomePage = () => {
-      const [isOpen, setIsOpen] = useState(false);
-  const columns = ['Nodo', 'Salas', 'Puertas'];
+  const [isOpen, setIsOpen] = useState(false);
+  const columns = ["Nodo", "Salas", "Puertas"];
   const dispositivos = [
     { id: 1, nodo: 101, salas: "Sala de Natación", puertas: "1,2" },
     { id: 2, nodo: 102, salas: "Sala de GYM", puertas: "3" },
@@ -19,7 +18,12 @@ const HomePage = () => {
     { id: 8, nodo: 108, salas: "Sala de Piragüismo", puertas: "12" },
     { id: 9, nodo: 109, salas: "Sala de Boccia", puertas: "13,14" },
     { id: 10, nodo: 110, salas: "Sala de Billar", puertas: "15" },
-    { id: 11, nodo: 111, salas: "Sala de Atletismo Inclusivo", puertas: "16,17" },
+    {
+      id: 11,
+      nodo: 111,
+      salas: "Sala de Atletismo Inclusivo",
+      puertas: "16,17",
+    },
   ];
 
   return (
@@ -35,7 +39,13 @@ const HomePage = () => {
         <Navbar setIsSidebarOpen={setIsOpen} />
 
         <div className="p-4 flex-grow overflow-auto">
-        <DynamicTable route={"dispositivos"} title={"Dispositivos"} columns={columns} data={dispositivos} showCheckboxes={true} />
+          <DynamicTable
+            route={"dispositivos"}
+            title={"Dispositivos"}
+            columns={columns}
+            data={dispositivos}
+            showCheckboxes={true}
+          />
         </div>
       </div>
     </div>
