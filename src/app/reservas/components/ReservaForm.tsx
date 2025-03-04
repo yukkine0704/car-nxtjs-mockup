@@ -1,342 +1,313 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
-import { 
-    Box, 
-    Button, 
-    TextField, 
-    Typography, 
-    Paper, 
-    FormHelperText,
+import React, { useState, useEffect } from "react";
+import {
+    Paper,
+    Typography,
+    Box,
+    TextField,
+    MenuItem,
+    Button,
     FormControl,
     InputLabel,
-    OutlinedInput,
-    FormLabel
-} from '@mui/material';
+    Select,
+    CircularProgress
+} from "@mui/material";
 import Grid from '@mui/material/Grid2';
-import { useDropzone } from 'react-dropzone';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useRouter } from 'next/navigation';
-import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
+import dayjs from 'dayjs';
 
-export default function BuildingsForm() {
+// Datos de ejemplo para la simulación
+const mockReservations = [
+    {
+        id: "1",
+        name: "Laura M.",
+        date: dayjs("2025-02-11"),
+        startTime: dayjs("2025-02-11T13:00:00"),
+        endTime: dayjs("2025-02-11T15:00:00"),
+        building: "Edificio 1",
+        local: "Gym",
+        sport: "Baloncesto",
+        status: "Pendiente",
+        user: "Juan Pérez",
+        notes: "Reserva para entrenamiento semanal"
+    },
+    {
+        id: "2",
+        name: "Carlos R.",
+        date: dayjs("2025-02-12"),
+        startTime: dayjs("2025-02-12T09:00:00"),
+        endTime: dayjs("2025-02-12T11:00:00"),
+        building: "Edificio 2",
+        local: "Sala de Reuniones",
+        sport: "Yoga",
+        status: "Confirmada",
+        user: "María González",
+        notes: "Sesión de yoga corporativa"
+    },
+    // Añade más reservas de ejemplo si lo necesitas
+];
+
+export default function ReservaForm({ isEditing = false, reservaId }: any) {
     const router = useRouter();
+    const [loading, setLoading] = useState(isEditing);
     const [formData, setFormData] = useState({
         name: '',
-        floors: '',
-        description: '',
+        date: null,
+        startTime: null,
+        endTime: null,
+        building: '',
+        local: '',
+        sport: '',
+        status: '',
+        user: '',
+        notes: ''
     });
-    
-    const [mainImage, setMainImage] = useState(null);
-    const [galleryImages, setGalleryImages] = useState([]);
-    const [touched, setTouched] = useState({});
-    const [errors, setErrors] = useState({});
 
-    // Validación
-    const validate = (fieldValues = formData) => {
-        const temp = { ...errors };
-        
-        if ('name' in fieldValues)
-            temp.name = fieldValues.name ? "" : "El nombre es requerido";
-        
-        if ('floors' in fieldValues) {
-            temp.floors = fieldValues.floors ? "" : "El número de pisos es requerido";
-            if (fieldValues.floors && (isNaN(fieldValues.floors) || parseInt(fieldValues.floors) <= 0))
-                temp.floors = "Ingresa un número válido de pisos";
+    // Definir listas de opciones específicas para cada campo
+    const buildings = ["Edificio 1", "Edificio 2", "Edificio 3"];
+    const locals = ["Gym", "Sala de Reuniones", "Piscina", "Auditorio", "Comedor"];
+    const sports = ["Fútbol", "Baloncesto", "Tenis", "Natación", "Yoga", "Atletismo"];
+    const statuses = ["Pendiente", "Confirmada", "Cancelada", "Completada"];
+    const users = ["Juan Pérez", "María González", "Carlos Rodríguez", "Ana Torres", "Pedro Sánchez"];
+
+    // Cargar datos si estamos en modo edición
+    useEffect(() => {
+        if (isEditing && reservaId) {
+            // Simulación de carga de datos - en una app real harías una llamada a API
+            setLoading(true);
+
+            // Simular un pequeño retraso como si fuera una llamada a API
+            setTimeout(() => {
+                const reserva = mockReservations.find(r => r.id === reservaId);
+
+                if (reserva) {
+                    setFormData(reserva);
+                } else {
+                    // Si no se encuentra la reserva, redirigir a la lista
+                    alert('Reserva no encontrada');
+                    router.push('/reservas');
+                }
+
+                setLoading(false);
+            }, 500);
         }
-        
-        if ('description' in fieldValues)
-            temp.description = fieldValues.description ? "" : "La descripción es requerida";
-        
-        setErrors({
-            ...temp
-        });
+    }, [isEditing, reservaId, router]);
 
-        if (fieldValues === formData)
-            return Object.values(temp).every(x => x === "");
-    };
-
-    // Manejador para cambios en campos de texto/número
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    const handleChange = (event) => {
+        const { name, value } = event.target;
         setFormData({
             ...formData,
             [name]: value
         });
-        
-        setTouched({
-            ...touched,
-            [name]: true
+    };
+
+    const handleDateChange = (date) => {
+        setFormData({
+            ...formData,
+            date
         });
-        
-        validate({ [name]: value });
     };
 
-    // Configuración para el dropzone de la imagen principal
-    const onMainImageDrop = useCallback(acceptedFiles => {
-        if (acceptedFiles.length > 0) {
-            const file = acceptedFiles[0];
-            setMainImage(Object.assign(file, {
-                preview: URL.createObjectURL(file)
-            }));
-        }
-    }, []);
+    const handleTimeChange = (name, time) => {
+        setFormData({
+            ...formData,
+            [name]: time
+        });
+    };
 
-    // Configuración para el dropzone de la galería
-    const onGalleryDrop = useCallback(acceptedFiles => {
-        const newImages = acceptedFiles.map(file => 
-            Object.assign(file, {
-                preview: URL.createObjectURL(file)
-            })
-        );
-        setGalleryImages(prev => [...prev, ...newImages]);
-    }, []);
+    const handleSubmit = (event) => {
+        event.preventDefault();
 
-    // Configuración de los dropzones
-    const mainImageDropzone = useDropzone({
-        onDrop: onMainImageDrop,
-        accept: {
-            'image/*': ['.jpg', '.jpeg', '.png', '.gif']
-        },
-        maxFiles: 1
-    });
-
-    const galleryDropzone = useDropzone({
-        onDrop: onGalleryDrop,
-        accept: {
-            'image/*': ['.jpg', '.jpeg', '.png', '.gif']
-        }
-    });
-
-    // Manejar envío del formulario
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        
-        // Marcar todos los campos como tocados para mostrar errores
-        const touchedFields = {};
-        Object.keys(formData).forEach(key => touchedFields[key] = true);
-        setTouched(touchedFields);
-
-        if (validate() && mainImage && galleryImages.length > 0) {
-            // Aquí iría la lógica para guardar los datos
-            console.log('Formulario enviado:', { ...formData, mainImage, galleryImages });
-            
-            // Redireccionar a la lista de edificaciones
-            router.push('/edificaciones');
+        // Lógica diferente según si estamos creando o editando
+        if (isEditing) {
+            console.log('Actualizando reserva:', reservaId, formData);
+            // Aquí harías tu llamada a API para actualizar
         } else {
-            if (!mainImage) setErrors(prev => ({ ...prev, mainImage: "La imagen principal es requerida" }));
-            if (galleryImages.length === 0) setErrors(prev => ({ ...prev, gallery: "Debes subir al menos una imagen para la galería" }));
+            console.log('Creando nueva reserva:', formData);
+            // Aquí harías tu llamada a API para crear
         }
+
+        router.push('/reservas');
     };
 
-    const handleCancel = () => {
-        router.push('/edificaciones');
-    };
+    if (loading) {
+        return (
+            <Paper className="p-6 rounded-lg shadow-md w-full flex justify-center items-center" style={{ minHeight: '300px' }}>
+                <CircularProgress />
+            </Paper>
+        );
+    }
 
     return (
         <Paper className="p-6 rounded-lg shadow-md w-full">
-            <Typography variant="h5" className="mb-6 font-bold" style={{ color: "#2498ff" }}>
-                Nueva Edificación
-            </Typography>
+            <Box className="mb-6">
+                <Typography variant="h6" className="font-bold" style={{ color: "#2498ff" }}>
+                    {isEditing ? 'Editar Reserva' : 'Nueva Reserva'}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                    {isEditing
+                        ? 'Actualiza los datos de la reserva'
+                        : 'Completa el formulario para crear una nueva reserva'}
+                </Typography>
+            </Box>
 
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    {/* Nombre del edificio */}
                     <Grid size={{ xs: 4, sm: 4, md: 6 }}>
                         <TextField
-                            name="name"
-                            label="Nombre del Edificio"
-                            variant="outlined"
                             fullWidth
+                            label="Nombre del solicitante"
+                            name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            error={touched.name && Boolean(errors.name)}
-                            helperText={touched.name && errors.name}
                             required
+                            variant="outlined"
                         />
                     </Grid>
 
-                    {/* Número de pisos */}
                     <Grid size={{ xs: 4, sm: 4, md: 6 }}>
-                        <TextField
-                            name="floors"
-                            label="Número de Pisos"
-                            variant="outlined"
-                            fullWidth
-                            type="number"
-                            inputProps={{ min: 1 }}
-                            value={formData.floors}
-                            onChange={handleChange}
-                            error={touched.floors && Boolean(errors.floors)}
-                            helperText={touched.floors && errors.floors}
-                            required
+                        <DatePicker
+                            label="Fecha"
+                            value={formData.date}
+                            onChange={handleDateChange}
+                            slotProps={{ textField: { fullWidth: true, required: true } }}
                         />
                     </Grid>
 
-                    {/* Imagen principal con label flotante */}
-                    <Grid size={{ xs: 4, sm: 8, md: 12 }}>
-                        <FormControl 
-                            fullWidth 
-                            variant="outlined" 
-                            error={Boolean(errors.mainImage)}
-                            required
-                        >
-                            <InputLabel 
-                                htmlFor="mainImage-upload"
-                                shrink={Boolean(mainImage)}
-                                style={{ 
-                                    background: 'white', 
-                                    padding: '0 8px' 
-                                }}
-                            >
-                                Imagen Principal
-                            </InputLabel>
-                            <Box
-                                {...mainImageDropzone.getRootProps()}
-                                className="border-2 border-dashed rounded-md cursor-pointer hover:bg-gray-50"
-                                style={{ 
-                                    borderColor: errors.mainImage ? '#d32f2f' : '#c4c4c4',
-                                    minHeight: '150px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    padding: '20px',
-                                    marginTop: '8px'
-                                }}
-                                id="mainImage-upload"
-                            >
-                                <input {...mainImageDropzone.getInputProps()} />
-                                {mainImage ? (
-                                    <Box className="flex flex-col items-center">
-                                        <img
-                                            src={mainImage.preview}
-                                            alt="Vista previa"
-                                            style={{ maxHeight: '150px', maxWidth: '100%', objectFit: 'contain' }}
-                                        />
-                                        <Typography variant="body2" className="mt-2">
-                                            {mainImage.name}
-                                        </Typography>
-                                    </Box>
-                                ) : (
-                                    <Box className="flex flex-col items-center">
-                                        <CloudUploadIcon style={{ fontSize: 48, color: '#2498ff' }} />
-                                        <Typography variant="body1" className="mt-2">
-                                            Arrastra una imagen aquí o haz clic para seleccionarla
-                                        </Typography>
-                                    </Box>
-                                )}
-                            </Box>
-                            {errors.mainImage && (
-                                <FormHelperText error>{errors.mainImage}</FormHelperText>
-                            )}
-                        </FormControl>
+                    <Grid size={{ xs: 4, sm: 4, md: 6 }}>
+                        <TimePicker
+                            label="Hora de inicio"
+                            value={formData.startTime}
+                            onChange={(time) => handleTimeChange('startTime', time)}
+                            slotProps={{ textField: { fullWidth: true, required: true } }}
+                        />
                     </Grid>
 
-                    {/* Galería de imágenes con label flotante */}
-                    <Grid size={{ xs: 4, sm: 8, md: 12 }}>
-                        <FormControl 
-                            fullWidth 
-                            variant="outlined" 
-                            error={Boolean(errors.gallery)}
-                            required
-                        >
-                            <InputLabel 
-                                htmlFor="gallery-upload"
-                                shrink={galleryImages.length > 0}
-                                style={{ 
-                                    background: 'white', 
-                                    padding: '0 8px' 
-                                }}
-                            >
-                                Galería de Imágenes
-                            </InputLabel>
-                            <Box
-                                {...galleryDropzone.getRootProps()}
-                                className="border-2 border-dashed rounded-md cursor-pointer hover:bg-gray-50"
-                                style={{ 
-                                    borderColor: errors.gallery ? '#d32f2f' : '#c4c4c4',
-                                    minHeight: '150px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    padding: '20px',
-                                    marginTop: '8px'
-                                }}
-                                id="gallery-upload"
-                            >
-                                <input {...galleryDropzone.getInputProps()} />
-                                <Box className="flex flex-col items-center justify-center">
-                                    <CloudUploadIcon style={{ fontSize: 48, color: '#2498ff' }} />
-                                    <Typography variant="body1" className="mt-2">
-                                        Arrastra imágenes aquí o haz clic para seleccionarlas
-                                    </Typography>
-                                </Box>
-                            </Box>
-                            {errors.gallery && (
-                                <FormHelperText error>{errors.gallery}</FormHelperText>
-                            )}
-                        </FormControl>
+                    <Grid size={{ xs: 4, sm: 4, md: 6 }}>
+                        <TimePicker
+                            label="Hora de fin"
+                            value={formData.endTime}
+                            onChange={(time) => handleTimeChange('endTime', time)}
+                            slotProps={{ textField: { fullWidth: true, required: true } }}
+                        />
+                    </Grid>
 
-                        {/* Previsualizaciones de la galería */}
-                        {galleryImages.length > 0 && (
-                            <Box className="mt-4 flex flex-wrap gap-2">
-                                {galleryImages.map((file, index) => (
-                                    <Box key={index} className="relative">
-                                        <img
-                                            src={file.preview}
-                                            alt={`Imagen ${index + 1}`}
-                                            style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                                            className="rounded"
-                                        />
-                                        <Button
-                                            size="small"
-                                            color="error"
-                                            variant="contained"
-                                            style={{ 
-                                                position: 'absolute', 
-                                                top: '5px', 
-                                                right: '5px',
-                                                minWidth: '24px',
-                                                width: '24px',
-                                                height: '24px',
-                                                padding: 0
-                                            }}
-                                            onClick={() => {
-                                                setGalleryImages(galleryImages.filter((_, i) => i !== index));
-                                            }}
-                                        >
-                                            ×
-                                        </Button>
-                                    </Box>
+                    <Grid size={{ xs: 4, sm: 4, md: 6 }}>
+                        <FormControl fullWidth>
+                            <InputLabel required>Edificio</InputLabel>
+                            <Select
+                                name="building"
+                                value={formData.building}
+                                onChange={handleChange}
+                                required
+                                label="Edificio"
+                            >
+                                {buildings.map((building) => (
+                                    <MenuItem key={building} value={building}>
+                                        {building}
+                                    </MenuItem>
                                 ))}
-                            </Box>
-                        )}
+                            </Select>
+                        </FormControl>
                     </Grid>
 
-                    {/* Descripción con textarea normal */}
+                    <Grid size={{ xs: 4, sm: 4, md: 6 }}>
+                        <FormControl fullWidth>
+                            <InputLabel required>Sala</InputLabel>
+                            <Select
+                                name="local"
+                                value={formData.local}
+                                onChange={handleChange}
+                                required
+                                label="Sala"
+                            >
+                                {locals.map((local) => (
+                                    <MenuItem key={local} value={local}>
+                                        {local}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid size={{ xs: 4, sm: 4, md: 6 }}>
+                        <FormControl fullWidth>
+                            <InputLabel required>Deporte</InputLabel>
+                            <Select
+                                name="sport"
+                                value={formData.sport}
+                                onChange={handleChange}
+                                required
+                                label="Deporte"
+                            >
+                                {sports.map((sport) => (
+                                    <MenuItem key={sport} value={sport}>
+                                        {sport}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid size={{ xs: 4, sm: 4, md: 6 }}>
+                        <FormControl fullWidth>
+                            <InputLabel>Estado</InputLabel>
+                            <Select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                                required
+                                label="Estado"
+                            >
+                                {statuses.map((status) => (
+                                    <MenuItem key={status} value={status}>
+                                        {status}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid size={{ xs: 4, sm: 4, md: 6 }}>
+                        <FormControl fullWidth>
+                            <InputLabel>Usuario</InputLabel>
+                            <Select
+                                name="user"
+                                value={formData.user}
+                                onChange={handleChange}
+                                required
+                                label="Usuario"
+                            >
+                                {users.map((user) => (
+                                    <MenuItem key={user} value={user}>
+                                        {user}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
                     <Grid size={{ xs: 4, sm: 8, md: 12 }}>
                         <TextField
-                            name="description"
-                            label="Descripción"
-                            variant="outlined"
                             fullWidth
-                            multiline
-                            rows={6}
-                            value={formData.description}
+                            label="Notas adicionales"
+                            name="notes"
+                            value={formData.notes}
                             onChange={handleChange}
-                            error={touched.description && Boolean(errors.description)}
-                            helperText={touched.description && errors.description}
-                            required
+                            multiline
+                            rows={4}
+                            variant="outlined"
                         />
                     </Grid>
 
-                    {/* Botones de acción */}
                     <Grid size={{ xs: 4, sm: 8, md: 12 }}>
                         <Box className="flex justify-end space-x-2 gap-4 mt-4">
                             <Button
                                 variant="outlined"
-                                onClick={handleCancel}
+                                onClick={() => router.push('/reservas')}
                             >
                                 Cancelar
                             </Button>
@@ -345,7 +316,7 @@ export default function BuildingsForm() {
                                 variant="contained"
                                 color="primary"
                             >
-                                Guardar
+                                {isEditing ? 'Actualizar Reserva' : 'Crear Reserva'}
                             </Button>
                         </Box>
                     </Grid>
